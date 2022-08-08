@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "python-gui-pic18-counting-and-weighing-scale"
+version = "0.1.0"
+description = "gui for a pic18 scale"
+authors = ["Lawen Thayalakrishnan"]
+license = "GPL3"
+
+[tool.poetry.dependencies]
+python = "3.8.5"
+PyQt5 = "5.15.0"
+numpy = "1.21.4"
+matplotlib = "3.2.2"
+pyqtgraph = "0.11.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
