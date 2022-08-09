@@ -143,6 +143,7 @@ class RealTimeSender(QWidget):
 
         self.label_dial_weight = LCDWidgetHelper("dial_weight", False, 200, 50)
         self.dial_weight.valueChanged.connect(self.label_dial_weight.display)
+        self.label_dial_weight.display(80)
 
         self.dial_count = QDial()
         self.dial_count.setNotchesVisible(True)
@@ -154,6 +155,7 @@ class RealTimeSender(QWidget):
 
         self.label_dial_count = LCDWidgetHelper("dial_count", False, 200, 50)
         self.dial_count.valueChanged.connect(self.label_dial_count.display)
+        self.label_dial_count.display(500)
 
 
 
@@ -161,21 +163,41 @@ class RealTimeSender(QWidget):
         """ Layout """
         VBox = QVBoxLayout(self)
 
-        vbox_layout_one = GenericLayoutHelper(
+        weight_dial_layout = GenericLayoutHelper(
             QVBoxLayout(),
             [
                 self.label_dial_weight,
-                self.dial_weight,
+                self.dial_weight
+            ],
+        )
+
+        count_dial_layout = GenericLayoutHelper(
+            QVBoxLayout(),
+            [
+                self.label_dial_count,
+                self.dial_count
+            ],
+        )
+        
+        dials_layout = QHBoxLayout()
+        dials_layout.addLayout(weight_dial_layout)
+        dials_layout.addLayout(count_dial_layout)
+
+
+        vbox_layout_one = GenericLayoutHelper(
+            QVBoxLayout(),
+            [
                 self.lineedit_message,
                 self.button_send,
                 self.button_connect,
+                self.button_calibrate,
+                self.button_tare
             ],
         )
+
         vbox_layout_two = GenericLayoutHelper(
             QVBoxLayout(),
             [
-                self.button_calibrate,
-                self.button_tare,
                 self.button_weigh,
                 self.button_count,
                 self.button_start_weigh,
@@ -191,6 +213,7 @@ class RealTimeSender(QWidget):
         )
 
         hbox_layout_one = QHBoxLayout()
+        hbox_layout_one.addLayout(dials_layout)
         hbox_layout_one.addLayout(vbox_layout_one)
         hbox_layout_one.addLayout(vbox_layout_two)
         hbox_layout_one.addLayout(vbox_layout_three)
