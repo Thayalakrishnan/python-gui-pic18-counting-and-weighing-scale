@@ -57,6 +57,12 @@ class RealTimeSender(QWidget):
 
     def __init__(self, parent=None):
         super(RealTimeSender, self).__init__(parent)
+        
+        
+        self.final_weight = 0
+        self.final_weight_count = 0
+        self.final_count = 0
+        
 
         """
         Text and Line Edits
@@ -201,7 +207,11 @@ class RealTimeSender(QWidget):
             self.textedit_output.append(f"[Received] {command}")
             
             if command == "-f":
-                self.send_data()
+                self.send_weight_data()
+                self.send_command('-f')
+            elif command == "-g":
+                self.send_count_data()
+                self.send_command('-g')
             else:
                 self.send_command(command)
 
@@ -230,7 +240,8 @@ class RealTimeSender(QWidget):
     #  @param self The object pointer"""
 
     @pyqtSlot()
-    def send_data(self):
+    def send_weight_data(self):       
+        
         for i in range(1000):
             weight_from_dial = self.dial_weight.value()
             weight_low = weight_from_dial - 5
@@ -246,8 +257,52 @@ class RealTimeSender(QWidget):
             weight = self.rng.integers(low=weight_low, high=weight_high)
             command = f"{weight}\r\n"
             self.serial.write(command.encode())
+            
         
-        self.send_command('-f')
+        weight_from_dial = self.dial_weight.value()
+        weight_low = weight_from_dial - 5
+        weight_high = weight_from_dial + 5
+        self.final_weight = self.rng.integers(low=weight_low, high=weight_high)
+        
+        command = f"#{self.final_weight}&\r\n"
+        self.serial.write(command.encode())
+        
+        #self.send_command('-f')
+        #self.send_command('-j')
+        
+
+    @pyqtSlot()
+    def send_count_data(self):
+        
+        
+        for i in range(1000):
+            weight_from_dial = self.dial_weight.value()
+            weight_low = weight_from_dial - 5
+            weight_high = weight_from_dial + 5
+            weight = self.rng.integers(low=weight_low, high=weight_high)
+            command = f"{weight}\r\n"
+            self.serial.write(command.encode())
+
+        for i in range(1000):
+            weight_from_dial = self.dial_weight.value()
+            weight_low = weight_from_dial - 5
+            weight_high = weight_from_dial + 5
+            weight = self.rng.integers(low=weight_low, high=weight_high)
+            command = f"{weight}\r\n"
+            self.serial.write(command.encode())
+            
+        weight_from_dial = self.dial_weight.value()
+        weight_low = weight_from_dial - 5
+        weight_high = weight_from_dial + 5
+        
+        self.final_weight_count = self.rng.integers(low=weight_low, high=weight_high)
+        self.final_count = int(self.final_weight_count // self.final_weight)
+        
+        command = f"#{self.final_count}&\r\n"
+        self.serial.write(command.encode())
+        #self.send_command('-g')
+        #self.send_command('-j')
+        
 
     @pyqtSlot(bool)
     def on_toggled(self, checked):
@@ -291,7 +346,7 @@ class RealTimeSender(QWidget):
     def send_command(self, command):
         to_send = f"{command}\r\n"
         self.serial.write(to_send.encode())
-        self.textedit_output.append(f"[Sent] {to_send.encode()}")
+        self.textedit_output.append(f"[Sent] {to_send}")
 
 
 if __name__ == "__main__":
@@ -306,3 +361,82 @@ if __name__ == "__main__":
 
     w.show()
     sys.exit(app.exec_())
+
+
+
+
+
+"""
+doesnt start start the process, only the protocol
+name="Start Weigh",
+cmd="-h",
+cmdType="STARTWEIGH",
+
+name="Start Count",
+cmd="-i",
+cmdType="STARTCOUNT",
+
+
+name="Finish",
+cmd="-j",
+cmdType="FINISH",
+
+
+name="Weigh",
+cmd="-f",
+cmdType="WEIGH",
+
+name="Re-Weigh",
+cmd="-f",
+cmdType="REWEIGH",
+
+
+name="Reset",
+cmd="-l",
+cmdType="RESET",
+
+
+
+name="Log Item",
+cmd="-m",
+cmdType="LOGITEM",
+
+
+name="Count",
+cmd="-g",
+cmdType="COUNT",
+
+
+name="Re-Count",
+cmd="-g",
+cmdType="RECOUNT",
+
+
+name="Calibrate",
+cmd="-d",
+cmdType="CALIBRATE",
+
+name="Tare",
+cmd="-e",
+cmdType="TARE",
+
+name="Open Viewer",
+cmd="-o",
+cmdType="OPENVIEWER",
+
+name="Close Viewer",
+cmd="-v",
+cmdType="CLOSEVIEWER",
+
+
+name="Disconnected",
+cmd="-k",
+cmdType="CONNECT",
+
+name="Connected",
+cmd="-k",
+cmdType="DISCONNECT",
+
+
+
+"""
