@@ -197,7 +197,13 @@ class RealTimeSender(QWidget):
     def receive(self):
         while self.serial.canReadLine():
             raw_input_data = self.serial.readLine().data().decode()
-            self.textedit_output.append(f"[Received] {raw_input_data}")
+            command = raw_input_data.rstrip("\r\n")
+            self.textedit_output.append(f"[Received] {command}")
+            
+            if command == "-f":
+                self.send_data()
+            else:
+                self.send_command(command)
 
     """ Method to send commands via serial
     #  @param self The object pointer"""
@@ -216,11 +222,32 @@ class RealTimeSender(QWidget):
 
             weight = self.rng.integers(low=weight_low, high=weight_high)
             command = f"{weight}\r\n"
+            
             self.serial.write(command.encode())
             # self.textedit_output.append(f"[Sent {i}] {command.encode()}")
 
     """ Method to create a serial connection with the board
     #  @param self The object pointer"""
+
+    @pyqtSlot()
+    def send_data(self):
+        for i in range(1000):
+            weight_from_dial = self.dial_weight.value()
+            weight_low = weight_from_dial - 5
+            weight_high = weight_from_dial + 5
+            weight = self.rng.integers(low=weight_low, high=weight_high)
+            command = f"{weight}\r\n"
+            self.serial.write(command.encode())
+
+        for i in range(1000):
+            weight_from_dial = self.dial_weight.value()
+            weight_low = weight_from_dial - 5
+            weight_high = weight_from_dial + 5
+            weight = self.rng.integers(low=weight_low, high=weight_high)
+            command = f"{weight}\r\n"
+            self.serial.write(command.encode())
+        
+        self.send_command('-f')
 
     @pyqtSlot(bool)
     def on_toggled(self, checked):

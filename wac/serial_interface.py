@@ -161,7 +161,6 @@ class SerialInterface(QtSerialPort.QSerialPort):
 
     @pyqtSlot(str)
     def Send(self, msg):
-
         if self.running:
             self.write(msg.encode())
             self.serial_send.emit(msg)
@@ -169,9 +168,13 @@ class SerialInterface(QtSerialPort.QSerialPort):
         self.waitForBytesWritten(1000)
 
     # [Slot] Send a command, wait for the response
+    """
+    change this when running on hardware
+    """
     @pyqtSlot(object)
     def RunCommand(self, cmd):
-        command = f"{cmd.cmd}\r"
+        # command = f"{cmd.cmd}\r"
+        command = f"{cmd.cmd}\r\n"
         self.currentCmd = cmd
         if self.running:
             self.write(command.encode())
