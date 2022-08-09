@@ -16,21 +16,23 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QDial,
-    QFrame
+    QFrame,
 )
 
 from theme import ApplicationTheme
 
 
-""" RangeFinder Class
-    This class creates an instance of the rangefiner application, inclduing the layout,
-    the serial connection and the plotting options. 
-    Buttons on the interface allow for interaction with the board
-    
-    This Class subclasses the QtWidgets to create an instance
-    
-    Methods from this class control the user interaction.
+""" 
+LCDWidgetHelper
+This class creates an instance of the rangefiner application, inclduing the layout,
+the serial connection and the plotting options. 
+Buttons on the interface allow for interaction with the board
+
+This Class subclasses the QtWidgets to create an instance
+
+Methods from this class control the user interaction.
 """
+
 
 def GenericLayoutHelper(layout_box, arr_widgets):
     for w in arr_widgets:
@@ -38,10 +40,9 @@ def GenericLayoutHelper(layout_box, arr_widgets):
     return layout_box
 
 
-
 def LCDWidgetHelper(
     lcd_object_name, lcd_has_decimal_point, lcd_size_width, lcd_size_height
-    ) -> QLCDNumber:
+) -> QLCDNumber:
     lcd = QLCDNumber()
     lcd.setFrameShape(QFrame.NoFrame)
     lcd.setFrameShadow(QFrame.Plain)
@@ -82,47 +83,59 @@ class RealTimeSender(QWidget):
         self.button_connect.setStyleSheet("background-color: red")
         self.button_connect.setFixedSize(200, 50)
 
-       
-        self.button_start_weigh = QPushButton(text="Start Weigh [Response]", clicked=self.button_start_weigh_clicked)
+        self.button_start_weigh = QPushButton(
+            text="Start Weigh [Response]", clicked=self.button_start_weigh_clicked
+        )
         self.button_start_weigh.setFixedSize(200, 50)
-        
-        self.button_weigh = QPushButton(text="Weigh/Re-Weigh [Response]", clicked=self.button_weigh_clicked)
+
+        self.button_weigh = QPushButton(
+            text="Weigh/Re-Weigh [Response]", clicked=self.button_weigh_clicked
+        )
         self.button_weigh.setFixedSize(200, 50)
-        
-        self.button_count = QPushButton(text="Count/Re-count [Response]", clicked=self.button_count_clicked)
+
+        self.button_count = QPushButton(
+            text="Count/Re-count [Response]", clicked=self.button_count_clicked
+        )
         self.button_count.setFixedSize(200, 50)
-                
-        self.button_start_count = QPushButton(text="Start Count [Response]", clicked=self.button_start_count_clicked)
+
+        self.button_start_count = QPushButton(
+            text="Start Count [Response]", clicked=self.button_start_count_clicked
+        )
         self.button_start_count.setFixedSize(200, 50)
-        
-        self.button_finish = QPushButton(text="Finish/Reset [Response]", clicked=self.button_finish_clicked)
+
+        self.button_finish = QPushButton(
+            text="Finish/Reset [Response]", clicked=self.button_finish_clicked
+        )
         self.button_finish.setFixedSize(200, 50)
-        
-        self.button_calibrate = QPushButton(text="Calibrate [Response]", clicked=self.button_calibrate_clicked)
+
+        self.button_calibrate = QPushButton(
+            text="Calibrate [Response]", clicked=self.button_calibrate_clicked
+        )
         self.button_calibrate.setFixedSize(200, 50)
 
-        self.button_tare = QPushButton(text="Tare [Response]", clicked=self.button_tare_clicked)
+        self.button_tare = QPushButton(
+            text="Tare [Response]", clicked=self.button_tare_clicked
+        )
         self.button_tare.setFixedSize(200, 50)
-        
-        
-        self.button_startup = QPushButton(text="Startup [Response]", clicked=self.button_startup_clicked)
+
+        self.button_startup = QPushButton(
+            text="Startup [Response]", clicked=self.button_startup_clicked
+        )
         self.button_startup.setFixedSize(200, 50)
-        
+
         """
         Dial
         """
         self.dial_weight = QDial()
-        # self.dial_weight.notchSize = 
+        # self.dial_weight.notchSize =
         self.dial_weight.setNotchesVisible(True)
         self.dial_weight.setWrapping(False)
         self.dial_weight.setMinimum(0)
         self.dial_weight.setMaximum(1000)
         self.dial_weight.setFixedSize(200, 200)
-        
+
         self.label_dial__weight = LCDWidgetHelper("dial_weight", False, 200, 50)
-        self.dial_weight.valueChanged.connect(
-            self.label_dial__weight.display
-        )
+        self.dial_weight.valueChanged.connect(self.label_dial__weight.display)
 
         """ Layout """
         VBox = QVBoxLayout(self)
@@ -147,15 +160,13 @@ class RealTimeSender(QWidget):
                 self.button_start_weigh,
                 self.button_start_count,
                 self.button_finish,
-                self.button_startup
+                self.button_startup,
             ],
         )
 
         vbox_layout_three = GenericLayoutHelper(
             QVBoxLayout(),
-            [
-                self.textedit_output
-            ],
+            [self.textedit_output],
         )
 
         hbox_layout_one = QHBoxLayout()
@@ -197,17 +208,17 @@ class RealTimeSender(QWidget):
         # command = f'[Sent] {self.lineedit_message.text()}\r'
         """
          #%d&
-        # """
-        
+        #"""
+
         for i in range(1000):
             weight_from_dial = self.dial_weight.value()
             weight_low = weight_from_dial - 5
             weight_high = weight_from_dial + 5
-            
+
             weight = self.rng.integers(low=weight_low, high=weight_high)
             command = f"{weight}\r\n"
             self.serial.write(command.encode())
-            #self.textedit_output.append(f"[Sent {i}] {command.encode()}")
+            # self.textedit_output.append(f"[Sent {i}] {command.encode()}")
 
     """ Method to create a serial connection with the board
     #  @param self The object pointer"""
@@ -227,31 +238,30 @@ class RealTimeSender(QWidget):
         else:
             self.serial.close()
 
-
     def button_calibrate_clicked(self):
-        self.send_command('-d')
+        self.send_command("-d")
 
     def button_tare_clicked(self):
-        self.send_command('-e')
+        self.send_command("-e")
 
     def button_weigh_clicked(self):
-        self.send_command('-f')
+        self.send_command("-f")
 
     def button_count_clicked(self):
-        self.send_command('-g')
+        self.send_command("-g")
 
     def button_start_weigh_clicked(self):
-        self.send_command('-h')
+        self.send_command("-h")
 
     def button_start_count_clicked(self):
-        self.send_command('-i')
+        self.send_command("-i")
 
     def button_finish_clicked(self):
-        self.send_command('-j')
+        self.send_command("-j")
 
     def button_startup_clicked(self):
-        self.send_command('-k')
-        
+        self.send_command("-k")
+
     def send_command(self, command):
         to_send = f"{command}\r\n"
         self.serial.write(to_send.encode())

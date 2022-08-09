@@ -2,6 +2,8 @@ from PyQt5.QtGui import QColor, QPalette
 
 
 """ Provides the Dark Theme """
+
+
 def ApplicationTheme() -> QPalette:
     palette = QPalette()
 
