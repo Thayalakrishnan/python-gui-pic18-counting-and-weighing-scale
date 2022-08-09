@@ -41,6 +41,7 @@ class Command(QObject):
         self.enable_button.emit()
 
 
+
 class CommandButton(QPushButton):
     def __init__(self, cmd: Command = None, *args, **kwargs):
         super(CommandButton, self).__init__(*args, **kwargs)

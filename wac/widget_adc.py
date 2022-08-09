@@ -19,7 +19,7 @@ import pyqtgraph as pg
 
 # pg.setConfigOption('foreground', 'r')
 
-COM_PORT = "COM9"
+COM_PORT = "COM5"
 BAUD_RATE = 9600
 
 
@@ -76,7 +76,6 @@ class SerialInterface(QtSerialPort.QSerialPort):
     def Receive(self):
         while self.canReadLine():
             raw_as_input = self.readLine().data()
-            print(raw_as_input)
             raw_input = raw_as_input.decode()
             self.serial_receive.emit(int(raw_input))
 
