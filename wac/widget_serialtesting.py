@@ -139,9 +139,24 @@ class RealTimeSender(QWidget):
         self.dial_weight.setMinimum(0)
         self.dial_weight.setMaximum(1000)
         self.dial_weight.setFixedSize(200, 200)
+        self.dial_weight.setValue(80)
 
-        self.label_dial__weight = LCDWidgetHelper("dial_weight", False, 200, 50)
-        self.dial_weight.valueChanged.connect(self.label_dial__weight.display)
+        self.label_dial_weight = LCDWidgetHelper("dial_weight", False, 200, 50)
+        self.dial_weight.valueChanged.connect(self.label_dial_weight.display)
+
+        self.dial_count = QDial()
+        self.dial_count.setNotchesVisible(True)
+        self.dial_count.setWrapping(False)
+        self.dial_count.setMinimum(0)
+        self.dial_count.setMaximum(1000)
+        self.dial_count.setFixedSize(200, 200)
+        self.dial_count.setValue(500)
+
+        self.label_dial_count = LCDWidgetHelper("dial_count", False, 200, 50)
+        self.dial_count.valueChanged.connect(self.label_dial_count.display)
+
+
+
 
         """ Layout """
         VBox = QVBoxLayout(self)
@@ -149,7 +164,7 @@ class RealTimeSender(QWidget):
         vbox_layout_one = GenericLayoutHelper(
             QVBoxLayout(),
             [
-                self.label_dial__weight,
+                self.label_dial_weight,
                 self.dial_weight,
                 self.lineedit_message,
                 self.button_send,
@@ -243,29 +258,16 @@ class RealTimeSender(QWidget):
     def send_weight_data(self):       
         
         for i in range(1000):
-            weight_from_dial = self.dial_weight.value()
-            weight_low = weight_from_dial - 5
-            weight_high = weight_from_dial + 5
-            weight = self.rng.integers(low=weight_low, high=weight_high)
-            command = f"{weight}\r\n"
-            self.serial.write(command.encode())
+            weight = self.get_weight(self.dial_weight.value())
+            self.send_weight(weight)
 
         for i in range(1000):
-            weight_from_dial = self.dial_weight.value()
-            weight_low = weight_from_dial - 5
-            weight_high = weight_from_dial + 5
-            weight = self.rng.integers(low=weight_low, high=weight_high)
-            command = f"{weight}\r\n"
-            self.serial.write(command.encode())
-            
-        
-        weight_from_dial = self.dial_weight.value()
-        weight_low = weight_from_dial - 5
-        weight_high = weight_from_dial + 5
-        self.final_weight = self.rng.integers(low=weight_low, high=weight_high)
-        
-        command = f"#{self.final_weight}&\r\n"
-        self.serial.write(command.encode())
+            weight = self.get_weight(self.dial_weight.value())
+            self.send_weight(weight)
+
+
+        self.final_weight = self.get_weight(self.dial_weight.value())
+        self.send_final_value(self.final_weight)
         
         #self.send_command('-f')
         #self.send_command('-j')
@@ -274,32 +276,18 @@ class RealTimeSender(QWidget):
     @pyqtSlot()
     def send_count_data(self):
         
-        
         for i in range(1000):
-            weight_from_dial = self.dial_weight.value()
-            weight_low = weight_from_dial - 5
-            weight_high = weight_from_dial + 5
-            weight = self.rng.integers(low=weight_low, high=weight_high)
-            command = f"{weight}\r\n"
-            self.serial.write(command.encode())
+            weight = self.get_weight(self.dial_count.value())
+            self.send_weight(weight)
 
         for i in range(1000):
-            weight_from_dial = self.dial_weight.value()
-            weight_low = weight_from_dial - 5
-            weight_high = weight_from_dial + 5
-            weight = self.rng.integers(low=weight_low, high=weight_high)
-            command = f"{weight}\r\n"
-            self.serial.write(command.encode())
-            
-        weight_from_dial = self.dial_weight.value()
-        weight_low = weight_from_dial - 5
-        weight_high = weight_from_dial + 5
+            weight = self.get_weight(self.dial_count.value())
+            self.send_weight(weight)
         
-        self.final_weight_count = self.rng.integers(low=weight_low, high=weight_high)
+        self.final_weight_count = self.get_weight(self.dial_count.value())
         self.final_count = int(self.final_weight_count // self.final_weight)
+        self.send_final_value(self.final_count)
         
-        command = f"#{self.final_count}&\r\n"
-        self.serial.write(command.encode())
         #self.send_command('-g')
         #self.send_command('-j')
         
@@ -318,6 +306,19 @@ class RealTimeSender(QWidget):
                     self.button_connect.setChecked(False)
         else:
             self.serial.close()
+
+    def get_weight(self,initial):
+        low , high = initial - 5, initial + 5
+        return self.rng.integers(low=low, high=high)
+
+    def send_weight(self, weight):
+        command = f"{weight}\r\n"
+        self.serial.write(command.encode())
+
+    def send_final_value(self, value):
+        command = f"#{value}&\r\n"
+        self.serial.write(command.encode())
+
 
     def button_calibrate_clicked(self):
         self.send_command("-d")
@@ -361,9 +362,6 @@ if __name__ == "__main__":
 
     w.show()
     sys.exit(app.exec_())
-
-
-
 
 
 """
