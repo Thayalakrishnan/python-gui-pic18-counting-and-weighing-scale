@@ -198,7 +198,6 @@ class RealTimeSender(QWidget):
         while self.serial.canReadLine():
             raw_input_data = self.serial.readLine().data().decode()
             self.textedit_output.append(f"[Received] {raw_input_data}")
-            print(f"[Received] {raw_input_data}")
 
     """ Method to send commands via serial
     #  @param self The object pointer"""
