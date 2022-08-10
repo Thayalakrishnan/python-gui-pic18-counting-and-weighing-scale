@@ -130,13 +130,13 @@ class SerialInterface(QtSerialPort.QSerialPort):
         a terminating '\\0' is always added. a newline characters is also added
         """
         while self.canReadLine():
-            print("receiving")
+            # print("receiving")
             raw_input = self.readLine().data().decode()
 
             self.serial_receive.emit(raw_input)
             self.live_data.emit(raw_input)
 
-            print(list(raw_input))
+            # print(list(raw_input))
             if self.currentCmd:
                 if "-" in raw_input:
                     start = raw_input.index("-")
@@ -157,7 +157,7 @@ class SerialInterface(QtSerialPort.QSerialPort):
             raw_input = self.readLine().data().decode()
             self.serial_receive.emit(raw_input)
             self.live_data.emit(raw_input)
-            print(list(raw_input))
+            # print(list(raw_input))
 
     @pyqtSlot(str)
     def Send(self, msg):
