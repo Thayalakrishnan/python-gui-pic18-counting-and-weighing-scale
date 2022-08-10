@@ -37,7 +37,7 @@ def ApplicationTheme() -> QPalette:
     # disabled
     palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(127, 127, 127))
     palette.setColor(QPalette.Disabled, QPalette.Text, QColor(127, 127, 127))
-    palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(127, 127, 127))
+    palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(20, 20, 20))
     palette.setColor(QPalette.Disabled, QPalette.Highlight, QColor(80, 80, 80))
     palette.setColor(QPalette.Disabled, QPalette.HighlightedText, QColor(127, 127, 127))
 

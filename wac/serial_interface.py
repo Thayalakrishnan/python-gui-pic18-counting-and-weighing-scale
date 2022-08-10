@@ -171,6 +171,7 @@ class SerialInterface(QtSerialPort.QSerialPort):
     """
     change this when running on hardware
     """
+
     @pyqtSlot(object)
     def RunCommand(self, cmd):
         # command = f"{cmd.cmd}\r"
